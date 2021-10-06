@@ -1,0 +1,31 @@
+---
+- name: (install) install packages
+  package:
+    name: "{{ takel_pip_deb_install_packages }}"
+    state: present
+    update_cache: true
+
+- name: (install) upgrade pip3
+  command: "pip3 install --upgrade pip"
+  changed_when: false
+
+- name: (install) install pip packages into venv
+  pip:
+    name: "{{ item.name }}"
+    state: present
+    version: "{{ item.version }}"
+    virtualenv: "{{ takel_pip_venv_path }}"
+    virtualenv_python: >-
+      python{{ takel_pip_venv_python_version | default('3') }}
+    virtualenv_site_packages: >-
+      {{ takel_pip_venv_global_site_packages | default(false) }}
+  when: takel_pip_venv_path is defined
+  loop: "{{ takel_pip_packages }}"
+
+- name: (install) install pip packages
+  pip:
+    name: "{{ item.name }}"
+    state: present
+    version: "{{ item.version }}"
+  when: takel_pip_venv_path is undefined
+  loop: "{{ takel_pip_packages }}"
