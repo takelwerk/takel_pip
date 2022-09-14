@@ -30,7 +30,8 @@ def test_takel_pip_system_check_version(host, testvars, python3):
         assert host.run_test(f"{python3} -c 'import {package_name}'"), \
             f"Failed to import {package['name']}"
 
-        if 'version' not in package.keys() or str(package['version']) == 'latest':
+        if 'version' not in package.keys() or \
+                str(package['version']) == 'latest':
             continue
 
         installed_version = host.check_output(
